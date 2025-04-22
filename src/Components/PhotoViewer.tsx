@@ -1,6 +1,8 @@
 import {
   Button,
   CircularProgress,
+  Dialog,
+  DialogContent,
   Grid,
   Stack,
   Typography,
@@ -8,15 +10,31 @@ import {
 import { useAlbumDetails } from "../hooks/useSearchPhotos";
 import { useNavigate, useParams } from "react-router";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { useState } from "react";
+import ImagePreviewModal from "../Reusable/ImagePreviewModal";
 
 const AlbumDetailView = () => {
   const { id } = useParams();
   const { data: album, isLoading, error } = useAlbumDetails(id as string);
   const navigate = useNavigate();
 
-  const handleNavigateBack=()=>{
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  const handleNavigateBack = () => {
     navigate("/");
-  }
+  };
+
+  const handleImageClick = (imageUrl: string) => {
+    setSelectedImage(imageUrl);
+    setOpenModal(true);
+  };
+
+  const handleClose = () => {
+    setOpenModal(false);
+    setSelectedImage(null);
+  };
+
   if (isLoading)
     return (
       <Stack
@@ -31,6 +49,7 @@ const AlbumDetailView = () => {
         <Typography variant="h6">Loading...</Typography>
       </Stack>
     );
+
   if (error) return <Typography>Error fetching album details</Typography>;
 
   return (
@@ -41,39 +60,49 @@ const AlbumDetailView = () => {
         Collection: {album.user.first_name} {album.user.last_name}
       </Typography>
       <Typography textAlign="center" variant="h6">
-        Total Photoes: {album.total_photos}
+        Total Photos: {album.total_photos}
       </Typography>
       <Typography textAlign="left" variant="h5">
         Preview Photos: {album?.preview_photos?.length}
       </Typography>
+
       <Button
         variant="contained"
         endIcon={<ArrowBackIcon />}
         color="error"
-        className="w-fit"
         onClick={handleNavigateBack}
-        sx={{ textAlign: "center" }}
+        sx={{ textAlign: "center", width: "fit-content" }}
       >
         Back
       </Button>
+
       <Grid container spacing={2}>
         {album?.preview_photos?.map((photo: any) => (
-          <Grid size={{ xs: 12, sm: 3, md: 3, lg: 3 }} key={photo.id}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }} key={photo.id}>
             <img
               src={photo.urls.thumb}
               alt={photo.slug}
               style={{
                 width: "100%",
-                height: "150px",
+                height: "300px",
                 objectFit: "cover",
                 borderRadius: "8px",
                 boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                cursor: "pointer",
               }}
+              onClick={() => handleImageClick(photo.urls.full)}
             />
           </Grid>
         ))}
       </Grid>
+
+      <ImagePreviewModal
+        open={openModal}
+        imageUrl={selectedImage}
+        onClose={handleClose}
+      />
     </Stack>
   );
 };
+
 export default AlbumDetailView;

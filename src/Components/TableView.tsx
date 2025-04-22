@@ -25,6 +25,7 @@ import { useDispatch } from "react-redux";
 import CreateAlbumForm from "./AddAlbum";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { useNavigate } from "react-router";
+import ImagePreviewModal from "../Reusable/ImagePreviewModal";
 
 const TableView = () => {
   const [search, setSearch] = useState("");
@@ -42,12 +43,20 @@ const TableView = () => {
     isLoading,
     error,
   } = useSearchPhotos(search, page, perPage);
+  const handleImageClick = (imageUrl: string) => {
+    setSelectedImage(imageUrl);
+    setOpenModal(true);
+  };
 
   const filteredCollections = collections?.filter((album: any) =>
     album.title.toLowerCase().includes(search.toLowerCase())
   );
-  const dispatch = useDispatch();
-
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const handleClose = () => {
+    setOpenModal(false);
+    setSelectedImage(null);
+  };
   const handleAlbumSubmit = async (data: AlbumFormData) => {
     try {
       const response = await axios.post("/api/albums", {
@@ -192,6 +201,8 @@ const TableView = () => {
                         borderRadius: "8px",
                         boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
                       }}
+                      onClick={() => handleImageClick(photo.urls.full)}
+
                     />
                   </Grid>
                 ))}
@@ -200,7 +211,11 @@ const TableView = () => {
           )}
         </Grid>
       </Grid>
-
+      <ImagePreviewModal
+        open={openModal}
+        imageUrl={selectedImage}
+        onClose={handleClose}
+      />
       <Stack
         direction={"row"}
         alignItems={"center"}
