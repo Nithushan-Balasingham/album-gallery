@@ -7,7 +7,7 @@ interface SlideshowProps {
 
 const Slideshow: React.FC<SlideshowProps> = ({ photos }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-
+console.log("PHOTS", photos)
   const handleNext = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % photos.length);
   };
@@ -22,7 +22,7 @@ const Slideshow: React.FC<SlideshowProps> = ({ photos }) => {
     <div>
       <div>
         <button onClick={handlePrevious}>Previous</button>
-        <img src={photos[currentIndex]?.urls.full} alt={photos[currentIndex]?.alt_description} />
+        <img src={photos[currentIndex]?.urls?.full} alt={photos[currentIndex]?.alt_description} />
         <button onClick={handleNext}>Next</button>
       </div>
       <p>{photos[currentIndex]?.alt_description}</p>
