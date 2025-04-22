@@ -19,10 +19,12 @@ import {
 import SearchBar from "./Searchbar";
 import { useEffect, useState } from "react";
 import { useSearchPhotos } from "../hooks/useSearchPhotos";
-import axios from 'axios';
+import axios from "axios";
 import { AlbumFormData } from "./albumSchema";
 import { useDispatch } from "react-redux";
 import CreateAlbumForm from "./AddAlbum";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import { useNavigate } from "react-router";
 
 const TableView = () => {
   const [search, setSearch] = useState("");
@@ -30,7 +32,11 @@ const TableView = () => {
   const [page, setPage] = useState(1);
   const [perPage] = useState(10);
   const [viewMode, setViewMode] = useState<"table" | "folder">("table");
+  const navigate = useNavigate();
 
+  const handleRoute = (id: string) => {
+    navigate(`/${id}`);
+  };
   const {
     data: collections,
     isLoading,
@@ -44,20 +50,19 @@ const TableView = () => {
 
   const handleAlbumSubmit = async (data: AlbumFormData) => {
     try {
-      const response = await axios.post('/api/albums', {
+      const response = await axios.post("/api/albums", {
         title: data.title,
         description: data.description,
         private: data.private,
         images: data.images,
       });
-  
-      console.log('Album created:', response.data);
-      // Optional: update Redux here
+
+      console.log("Album created:", response.data);
     } catch (err) {
-      console.error('Album creation failed', err);
+      console.error("Album creation failed", err);
     }
   };
-  
+
   const handleAlbumClick = (album: any) => {
     if (selectedAlbum?.id === album.id) {
       setSelectedAlbum(null);
@@ -77,7 +82,7 @@ const TableView = () => {
     setSelectedAlbum(null);
   }, [search]);
   return (
-    <Stack direction={"column"}  alignItems={"center"} className=" p-4 ">
+    <Stack direction={"column"} alignItems={"center"} className=" p-4 ">
       <SearchBar search={search} setSearch={setSearch} />
       <CreateAlbumForm onSubmit={handleAlbumSubmit} />
 
@@ -99,8 +104,9 @@ const TableView = () => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell>Album</TableCell>
-                    <TableCell>Description</TableCell>
+                    <TableCell><Typography variant="h6">Album</Typography></TableCell>
+                    <TableCell><Typography variant="h6">Description</Typography></TableCell>
+                    <TableCell>View</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -121,6 +127,9 @@ const TableView = () => {
                       <TableCell>
                         {album.description || "No description available"}
                       </TableCell>
+                      <TableCell onClick={() => handleRoute(album.id)}>
+                        <VisibilityIcon />
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -129,7 +138,7 @@ const TableView = () => {
           ) : (
             <Grid container spacing={2}>
               {filteredCollections?.map((album: any) => (
-                <Grid size={{ xs: 4, sm: 6, md: 4 }} key={album.id}>
+                <Grid size={{ xs: 12, sm: 6, md: 4 }} key={album.id}>
                   <Box
                     onClick={() => handleAlbumClick(album)}
                     sx={{
@@ -147,9 +156,14 @@ const TableView = () => {
                       },
                     }}
                   >
-                    <Typography variant="subtitle1" gutterBottom>
-                      {album.title}
-                    </Typography>
+                    <Stack direction={"row"} alignItems={"center"} justifyContent={"space-between"}>
+                      <Typography variant="h5" gutterBottom>
+                        {album.title}
+                      </Typography>
+                      <Typography onClick={() => handleRoute(album.id)} marginBottom={"7px"}>
+                        <VisibilityIcon />
+                      </Typography>
+                    </Stack>
                     <Typography variant="body2">
                       {album.description || "No description"}
                     </Typography>
@@ -167,7 +181,7 @@ const TableView = () => {
               </Typography>
               <Grid container spacing={2}>
                 {selectedAlbum.preview_photos?.map((photo: any) => (
-                  <Grid size={{ xs: 6, sm: 6, lg:4 }} key={photo.id}>
+                  <Grid size={{ xs: 6, sm: 6, lg: 4 }} key={photo.id}>
                     <img
                       src={photo.urls.thumb}
                       alt={photo.slug}

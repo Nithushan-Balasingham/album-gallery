@@ -22,8 +22,8 @@ const AddAlbumForm: React.FC = () => {
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit} sx={{ mb: 4 }}>
-      <Typography variant="h6" gutterBottom>Add New Album</Typography>
+    <Box component="form" onSubmit={handleSubmit} sx={{ m: 4 }}>
+      <Typography variant="h5" >Add New Album</Typography>
       <TextField
         label="Album Title"
         value={title}

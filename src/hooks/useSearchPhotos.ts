@@ -22,3 +22,17 @@ export const useSearchPhotos = (query: string, page: number, perPage: number) =>
     enabled: true,
   });
 };
+const fetchAlbumDetails = async (albumId: string) => {
+  const res = await axios.get(`https://api.unsplash.com/collections/${albumId}`, {
+    headers: { Authorization: `Client-ID ${ACCESS_KEY}` },
+  });
+  return res.data;
+};
+
+export const useAlbumDetails = (albumId: string) => {
+  return useQuery({
+    queryKey: ["albumDetails", albumId],
+    queryFn: () => fetchAlbumDetails(albumId),
+    enabled: !!albumId, // Only fetch when albumId is available
+  });
+};
