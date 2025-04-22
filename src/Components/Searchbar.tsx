@@ -15,6 +15,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ search, setSearch }) => {
         onChange={(e) => setSearch(e.target.value)}
         placeholder="Search Unsplash..."
       />
+      
     </div>
   );
 };

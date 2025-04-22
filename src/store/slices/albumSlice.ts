@@ -1,32 +1,56 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-type Album = {
-  id: string;
-  name: string;
-  description?: string;
-  createdAt: string;
-};
-
+// Define initial state for the album slice
 interface AlbumState {
-  list: Album[];
+  selectedAlbum: any | null;
+  collections: any[];
+  search: string;
+  page: number;
 }
 
 const initialState: AlbumState = {
-  list: [],
+  selectedAlbum: null,
+  collections: [],
+  search: '',
+  page: 1,
 };
 
+// Create album slice
 const albumSlice = createSlice({
-  name: 'albums',
+  name: 'album',
   initialState,
   reducers: {
-    addAlbum: (state, action: PayloadAction<Album>) => {
-      state.list.push(action.payload);
+    // Action to set the selected album
+    setSelectedAlbum(state, action: PayloadAction<any>) {
+      state.selectedAlbum = action.payload;
     },
-    deleteAlbum: (state, action: PayloadAction<string>) => {
-      state.list = state.list.filter(album => album.id !== action.payload);
+    // Action to set the list of collections
+    setCollections(state, action: PayloadAction<any[]>) {
+      state.collections = action.payload;
+    },
+    // Action to set the search term
+    setSearch(state, action: PayloadAction<string>) {
+      state.search = action.payload;
+    },
+    // Action to set the page number
+    setPage(state, action: PayloadAction<number>) {
+      state.page = action.payload;
+    },
+    // Clear the selected album
+    clearSelectedAlbum(state) {
+      state.selectedAlbum = null;
     },
   },
 });
 
-export const { addAlbum, deleteAlbum } = albumSlice.actions;
+// Export the actions for use in components
+export const { 
+  setSelectedAlbum, 
+  setCollections, 
+  setSearch, 
+  setPage, 
+  clearSelectedAlbum 
+} = albumSlice.actions;
+
+// Export the reducer to be used in the store
 export default albumSlice.reducer;
