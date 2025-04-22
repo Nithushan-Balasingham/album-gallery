@@ -19,6 +19,10 @@ import {
 import SearchBar from "./Searchbar";
 import { useEffect, useState } from "react";
 import { useSearchPhotos } from "../hooks/useSearchPhotos";
+import axios from 'axios';
+import { AlbumFormData } from "./albumSchema";
+import { useDispatch } from "react-redux";
+import CreateAlbumForm from "./AddAlbum";
 
 const TableView = () => {
   const [search, setSearch] = useState("");
@@ -36,7 +40,24 @@ const TableView = () => {
   const filteredCollections = collections?.filter((album: any) =>
     album.title.toLowerCase().includes(search.toLowerCase())
   );
+  const dispatch = useDispatch();
 
+  const handleAlbumSubmit = async (data: AlbumFormData) => {
+    try {
+      const response = await axios.post('/api/albums', {
+        title: data.title,
+        description: data.description,
+        private: data.private,
+        images: data.images,
+      });
+  
+      console.log('Album created:', response.data);
+      // Optional: update Redux here
+    } catch (err) {
+      console.error('Album creation failed', err);
+    }
+  };
+  
   const handleAlbumClick = (album: any) => {
     if (selectedAlbum?.id === album.id) {
       setSelectedAlbum(null);
@@ -58,6 +79,8 @@ const TableView = () => {
   return (
     <Stack direction={"column"}  alignItems={"center"} className=" p-4 ">
       <SearchBar search={search} setSearch={setSearch} />
+      <CreateAlbumForm onSubmit={handleAlbumSubmit} />
+
       <FormControl style={{ minWidth: 150, marginTop: 16 }}>
         <InputLabel>View</InputLabel>
         <Select

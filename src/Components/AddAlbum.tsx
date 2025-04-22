@@ -1,54 +1,49 @@
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { addAlbum } from '../store/slices/albumSlice';
-import { useCreateCollection } from '../hooks/useCreateCollection';
+import React, { useState } from "react";
+import { Button, TextField, Box, Typography } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { createAlbum } from "./albumThunks";
 
-const AddAlbum = () => {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const accessToken = useSelector((state: any) => state.auth.accessToken); // Assuming accessToken is stored in Redux
+const AddAlbumForm: React.FC = () => {
   const dispatch = useDispatch();
-  
-  const { mutate, isLoading, error } = useCreateCollection();
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
 
-  const handleCreateCollection = async () => {
-    if (title.trim()) {
-      try {
-        const newCollection = await mutate(accessToken, title, description);
-        
-        // Dispatch action to add the collection to Redux state
-        dispatch(addAlbum({
-          id: newCollection.id,
-          name: newCollection.title,
-          description: newCollection.description,
-          createdAt: newCollection.created_at,
-        }));
-      } catch (err) {
-        console.error('Failed to create collection:', err);
-      }
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!title.trim()) return;
+
+    try {
+      await dispatch(createAlbum(title, description, false) as any);
+      setTitle("");
+      setDescription("");
+    } catch (error) {
+      console.error("Failed to create album");
     }
   };
 
   return (
-    <div>
-      <h2>Create New Collection</h2>
-      <input
-        type="text"
-        placeholder="Collection Title"
+    <Box component="form" onSubmit={handleSubmit} sx={{ mb: 4 }}>
+      <Typography variant="h6" gutterBottom>Add New Album</Typography>
+      <TextField
+        label="Album Title"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
+        fullWidth
+        required
+        margin="normal"
       />
-      <textarea
-        placeholder="Collection Description (optional)"
+      <TextField
+        label="Description"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
+        fullWidth
+        multiline
+        rows={3}
+        margin="normal"
       />
-      <button onClick={handleCreateCollection} disabled={isLoading}>
-        {isLoading ? 'Creating...' : 'Create Collection'}
-      </button>
-      {error && <p style={{ color: 'red' }}>Error: {error.message}</p>}
-    </div>
+      <Button variant="contained" type="submit">Create Album</Button>
+    </Box>
   );
 };
 
-export default AddAlbum;
+export default AddAlbumForm;
