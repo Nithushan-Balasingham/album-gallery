@@ -1,32 +1,54 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
-type Album = {
-  id: string;
+interface Album {
   name: string;
-  description?: string;
-  createdAt: string;
-};
-
+  images: string[];
+}
 interface AlbumState {
-  list: Album[];
+  selectedAlbum: Album | null;
+  collections: Album[];
+  search: string;
+  page: number;
 }
 
 const initialState: AlbumState = {
-  list: [],
+  selectedAlbum: null,
+  collections: [],
+  search: '',
+  page: 1,
 };
 
 const albumSlice = createSlice({
-  name: 'albums',
+  name: 'album',
   initialState,
   reducers: {
-    addAlbum: (state, action: PayloadAction<Album>) => {
-      state.list.push(action.payload);
+    addAlbum(state, action: PayloadAction<Album>) {
+      state.collections.push(action.payload);
     },
-    deleteAlbum: (state, action: PayloadAction<string>) => {
-      state.list = state.list.filter(album => album.id !== action.payload);
+    setSelectedAlbum(state, action: PayloadAction<any>) {
+      state.selectedAlbum = action.payload;
+    },
+    setCollections(state, action: PayloadAction<any[]>) {
+      state.collections = action.payload;
+    },
+    setSearch(state, action: PayloadAction<string>) {
+      state.search = action.payload;
+    },
+    setPage(state, action: PayloadAction<number>) {
+      state.page = action.payload;
+    },
+    clearSelectedAlbum(state) {
+      state.selectedAlbum = null;
     },
   },
 });
 
-export const { addAlbum, deleteAlbum } = albumSlice.actions;
+export const { 
+  addAlbum,
+  setSelectedAlbum, 
+  setCollections, 
+  setSearch, 
+  setPage, 
+  clearSelectedAlbum 
+} = albumSlice.actions;
+
 export default albumSlice.reducer;

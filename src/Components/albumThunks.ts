@@ -1,0 +1,31 @@
+// albumThunks.ts
+import { AppDispatch } from '../store'; // adjust path if needed
+import axios from 'axios';
+import { addAlbum } from '../store/slices/albumSlice';
+
+const ACCESS_TOKEN = import.meta.env.VITE_ACCESS_TOKEN;
+
+export const createAlbum = (title: string, description = "", isPrivate = false) => async (dispatch: AppDispatch) => {
+  try {
+    const res = await axios.post(
+      "https://api.unsplash.com/collections",
+      { title, description, private: isPrivate },
+      {
+        headers: {
+          Authorization: `Bearer ${ACCESS_TOKEN}`,
+        },
+      }
+    );
+
+    const newAlbum = {
+      name: res.data.title,
+      images: [], // no images initially
+    };
+
+    dispatch(addAlbum(newAlbum));
+    return res.data;
+  } catch (error) {
+    console.error("Error creating album:", error);
+    throw error;
+  }
+};
