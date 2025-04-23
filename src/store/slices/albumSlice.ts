@@ -24,6 +24,13 @@ const albumSlice = createSlice({
     addAlbum(state, action: PayloadAction<Album>) {
       state.collections.push(action.payload);
     },
+    addImageToAlbum: (state, action: PayloadAction<{ albumId: string; imageId: string }>) => {
+      const { albumId, imageId } = action.payload;
+      const album = state.collections.find((album) => album.id === albumId);
+      if (album) {
+        album.images.push(imageId); 
+      }
+    },  
     setSelectedAlbum(state, action: PayloadAction<any>) {
       state.selectedAlbum = action.payload;
     },
@@ -48,7 +55,8 @@ export const {
   setCollections, 
   setSearch, 
   setPage, 
-  clearSelectedAlbum 
+  clearSelectedAlbum ,
+  addImageToAlbum 
 } = albumSlice.actions;
 
 export default albumSlice.reducer;

@@ -21,11 +21,13 @@ import { useEffect, useState } from "react";
 import { useSearchPhotos } from "../hooks/useSearchPhotos";
 import axios from "axios";
 import { AlbumFormData } from "./albumSchema";
-import { useDispatch } from "react-redux";
 import CreateAlbumForm from "./AddAlbum";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { useNavigate } from "react-router";
 import ImagePreviewModal from "../Reusable/ImagePreviewModal";
+import { AuthButton } from "../Widgets/AuthButton";
+import { useUnsplashUser, useUserCollections } from "../hooks/useUser";
+import AlbumTable from "../Widgets/Table";
 
 const TableView = () => {
   const [search, setSearch] = useState("");
@@ -40,13 +42,15 @@ const TableView = () => {
   };
   const {
     data: collections,
-    isLoading,
+    isLoading: isPhotoLoading,
     error,
   } = useSearchPhotos(search, page, perPage);
   const handleImageClick = (imageUrl: string) => {
     setSelectedImage(imageUrl);
     setOpenModal(true);
   };
+  const { data: userData, isLoading: userLoading } = useUnsplashUser();
+  const { data: userColletion } = useUserCollections(userData?.username);
 
   const filteredCollections = collections?.filter((album: any) =>
     album.title.toLowerCase().includes(search.toLowerCase())
@@ -90,8 +94,23 @@ const TableView = () => {
   useEffect(() => {
     setSelectedAlbum(null);
   }, [search]);
+  console.log(userColletion)
   return (
     <Stack direction={"column"} alignItems={"center"} className=" p-4 ">
+      <AuthButton />
+      {!userColletion || userColletion.length === 0 ? (
+    <Typography>No Own Collections Found</Typography>
+  ) : (
+    <Stack width={"100%"} marginTop={2} alignItems={"center"} justifyContent={"center"}>
+      <Typography>My Collection</Typography>
+      <AlbumTable
+        albums={userColletion}
+        selectedAlbumId={selectedAlbum?.id}
+        onAlbumClick={handleAlbumClick}
+        onViewClick={handleRoute}
+      />
+    </Stack>
+  )}
       <SearchBar search={search} setSearch={setSearch} />
       <CreateAlbumForm onSubmit={handleAlbumSubmit} />
 
@@ -109,41 +128,14 @@ const TableView = () => {
       <Grid container spacing={4} style={{ marginTop: "12px" }}>
         <Grid size={{ xs: 12, md: selectedAlbum ? 6 : 12 }}>
           {viewMode === "table" ? (
-            <TableContainer component={Paper}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell><Typography variant="h6">Album</Typography></TableCell>
-                    <TableCell><Typography variant="h6">Description</Typography></TableCell>
-                    <TableCell>View</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {filteredCollections?.map((album: any) => (
-                    <TableRow
-                      key={album.id}
-                      onClick={() => handleAlbumClick(album)}
-                      hover
-                      style={{
-                        cursor: "pointer",
-                        backgroundColor:
-                          selectedAlbum?.id === album.id
-                            ? "#e0f7fa"
-                            : "inherit",
-                      }}
-                    >
-                      <TableCell>{album.title}</TableCell>
-                      <TableCell>
-                        {album.description || "No description available"}
-                      </TableCell>
-                      <TableCell onClick={() => handleRoute(album.id)}>
-                        <VisibilityIcon />
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+            <>
+              <AlbumTable
+                albums={filteredCollections}
+                selectedAlbumId={selectedAlbum?.id}
+                onAlbumClick={handleAlbumClick}
+                onViewClick={handleRoute}
+              />
+            </>
           ) : (
             <Grid container spacing={2}>
               {filteredCollections?.map((album: any) => (
@@ -165,11 +157,18 @@ const TableView = () => {
                       },
                     }}
                   >
-                    <Stack direction={"row"} alignItems={"center"} justifyContent={"space-between"}>
+                    <Stack
+                      direction={"row"}
+                      alignItems={"center"}
+                      justifyContent={"space-between"}
+                    >
                       <Typography variant="h5" gutterBottom>
                         {album.title}
                       </Typography>
-                      <Typography onClick={() => handleRoute(album.id)} marginBottom={"7px"}>
+                      <Typography
+                        onClick={() => handleRoute(album.id)}
+                        marginBottom={"7px"}
+                      >
                         <VisibilityIcon />
                       </Typography>
                     </Stack>
@@ -202,7 +201,6 @@ const TableView = () => {
                         boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
                       }}
                       onClick={() => handleImageClick(photo.urls.full)}
-
                     />
                   </Grid>
                 ))}

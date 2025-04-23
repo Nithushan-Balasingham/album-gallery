@@ -14,7 +14,24 @@ const fetchCollections = async (query: string, page: number, perPage: number) =>
   });
   return res.data;
 };
-
+const fetchImages = async (query: string, page: number, perPage: number) => {
+  const res = await axios.get("https://api.unsplash.com/search/photos", {
+    headers: { Authorization: `Client-ID ${ACCESS_KEY}` },
+    params: {
+      query,
+      page,
+      per_page: perPage,
+    },
+  });
+  return res.data.results;
+};
+export const useSearchPhoto = (query: string, page: number, perPage: number) => {
+  return useQuery({
+    queryKey: ["searchPhoto", query, page, perPage],
+    queryFn: () => fetchImages(query, page, perPage),
+    enabled: true,
+  });
+};
 export const useSearchPhotos = (query: string, page: number, perPage: number) => {
   return useQuery({
     queryKey: ["searchPhotos", query, page, perPage],
@@ -22,6 +39,8 @@ export const useSearchPhotos = (query: string, page: number, perPage: number) =>
     enabled: true,
   });
 };
+
+
 const fetchAlbumDetails = async (albumId: string) => {
   const res = await axios.get(`https://api.unsplash.com/collections/${albumId}`, {
     headers: { Authorization: `Client-ID ${ACCESS_KEY}` },
@@ -33,6 +52,6 @@ export const useAlbumDetails = (albumId: string) => {
   return useQuery({
     queryKey: ["albumDetails", albumId],
     queryFn: () => fetchAlbumDetails(albumId),
-    enabled: !!albumId, // Only fetch when albumId is available
+    enabled: !!albumId, 
   });
 };

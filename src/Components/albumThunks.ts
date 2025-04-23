@@ -1,5 +1,4 @@
-// albumThunks.ts
-import { AppDispatch } from '../store'; // adjust path if needed
+import { AppDispatch } from '../store'; 
 import axios from 'axios';
 import { addAlbum } from '../store/slices/albumSlice';
 
@@ -19,7 +18,7 @@ export const createAlbum = (title: string, description = "", isPrivate = false) 
 
     const newAlbum = {
       name: res.data.title,
-      images: [], // no images initially
+      images: [], 
     };
 
     dispatch(addAlbum(newAlbum));

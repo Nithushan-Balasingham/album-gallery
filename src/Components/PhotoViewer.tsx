@@ -1,22 +1,45 @@
 import {
   Button,
   CircularProgress,
-  Dialog,
-  DialogContent,
   Grid,
   Stack,
   Typography,
 } from "@mui/material";
-import { useAlbumDetails } from "../hooks/useSearchPhotos";
+import { useAlbumDetails, useSearchPhotos } from "../hooks/useSearchPhotos";
 import { useNavigate, useParams } from "react-router";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useState } from "react";
 import ImagePreviewModal from "../Reusable/ImagePreviewModal";
+import { useAddImageToAlbum } from "../hooks/useUploadImage";
+import SearchBar from "./Searchbar";
 
 const AlbumDetailView = () => {
   const { id } = useParams();
-  const { data: album, isLoading, error } = useAlbumDetails(id as string);
+  const { data: album } = useAlbumDetails(id as string);
   const navigate = useNavigate();
+
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedImageId, setSelectedImageId] = useState<string | null>(null);
+console.log(selectedImageId)
+  // const { data: collections, isLoading, error } =
+  //   searchQuery.trim() !== '' ? useSearchPhotos(searchQuery.trim(), 1, 20) : { data: [], isLoading: false, error: null };
+  const [page, setPage] = useState(1);
+
+  const { mutate: addImageToAlbumMutation } = useAddImageToAlbum();
+  const { data: collections, isLoading, error } = useSearchPhotos(searchQuery, page, 30);
+
+  const handleImageSelect = (imageId: string) => {
+    setSelectedImageId(imageId);
+  };
+  const loadMoreImages = () => {
+    setPage(prev => prev + 1);
+  };
+  
+  const handleAddImageToAlbum = () => {
+    if (id && selectedImageId) {
+      addImageToAlbumMutation({ albumId: id, photoId: selectedImageId });
+    }
+  };
 
   const [openModal, setOpenModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -35,32 +58,59 @@ const AlbumDetailView = () => {
     setSelectedImage(null);
   };
 
-  if (isLoading)
-    return (
-      <Stack
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-        }}
-      >
-        <CircularProgress size={60} color="primary" />
-        <Typography variant="h6">Loading...</Typography>
-      </Stack>
-    );
-
-  if (error) return <Typography>Error fetching album details</Typography>;
+  const filteredCollections = collections?.filter((col: any) =>
+    col.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    col.description?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <Stack spacing={2} sx={{ padding: 2 }}>
+      <Stack spacing={2}>
+        <Typography variant="h4">Search and Add from Collections</Typography>
+        <SearchBar search={searchQuery} setSearch={setSearchQuery} />
+
+        {isLoading && <CircularProgress />}
+        {error && <Typography color="error">Error fetching collections</Typography>}
+
+        <Grid container spacing={2}>
+          {filteredCollections?.map((collection: any) => (
+            <Grid  size={{xs:12, sm:6, md:4}} key={collection.id}>
+              <img
+                src={collection.cover_photo?.urls.thumb}
+                alt={collection.title}
+                style={{
+                  width: "200px",
+                  height: "150px",
+                  objectFit: "cover",
+                  borderRadius: "8px",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                }}
+                onClick={() => handleImageSelect(collection.cover_photo?.id)}
+              />
+              <Typography>{collection.title}</Typography>
+            </Grid>
+          ))}
+        </Grid>
+        <Button onClick={loadMoreImages} disabled={isLoading}>
+  {isLoading ? 'Loading More...' : 'Load More'}
+</Button>
+        {selectedImageId && (
+          <Stack direction="row" spacing={2} alignItems="center">
+            <Typography>Selected Image ID: {selectedImageId}</Typography>
+            <Button variant="contained" onClick={handleAddImageToAlbum}>
+              Add to Album
+            </Button>
+          </Stack>
+        )}
+      </Stack>
+
       <Typography variant="h4">{album?.title}</Typography>
       <Typography variant="body1">{album?.description}</Typography>
       <Typography textAlign="center" variant="h6">
-        Collection: {album.user.first_name} {album.user.last_name}
+        Collection: {album?.user?.first_name} {album?.user?.last_name}
       </Typography>
       <Typography textAlign="center" variant="h6">
-        Total Photos: {album.total_photos}
+        Total Photos: {album?.total_photos}
       </Typography>
       <Typography textAlign="left" variant="h5">
         Preview Photos: {album?.preview_photos?.length}
@@ -78,7 +128,7 @@ const AlbumDetailView = () => {
 
       <Grid container spacing={2}>
         {album?.preview_photos?.map((photo: any) => (
-          <Grid size={{ xs: 12, sm: 6, md: 3 }} key={photo.id}>
+          <Grid  size={{xs:12, sm:6, md:3}} key={photo.id}>
             <img
               src={photo.urls.thumb}
               alt={photo.slug}
