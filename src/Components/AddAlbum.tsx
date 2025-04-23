@@ -1,4 +1,4 @@
-import React from "react";
+import React, { FC } from "react";
 import { Button, TextField, Box, Typography } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { createAlbum } from "./albumThunks";
@@ -16,8 +16,17 @@ const schema = z.object({
 });
 
 type FormData = z.infer<typeof schema>;
+interface CreateAlbumFormProps {
+  onSubmit: (data: {
+    title: string;
+    private: boolean;
+    images: string[];
+    description?: string;
+  }) => Promise<void>;
+}
 
-const AddAlbumForm: React.FC = () => {
+
+const AddAlbumForm: FC<CreateAlbumFormProps>= () => {
   const dispatch: AppDispatch = useDispatch();
 
   const {
