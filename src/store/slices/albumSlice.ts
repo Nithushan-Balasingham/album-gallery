@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 interface Album {
+  id: string;     
   name: string;
   images: string[];
 }
@@ -31,31 +32,12 @@ const albumSlice = createSlice({
         album.images.push(imageId); 
       }
     },  
-    setSelectedAlbum(state, action: PayloadAction<any>) {
-      state.selectedAlbum = action.payload;
-    },
-    setCollections(state, action: PayloadAction<any[]>) {
-      state.collections = action.payload;
-    },
-    setSearch(state, action: PayloadAction<string>) {
-      state.search = action.payload;
-    },
-    setPage(state, action: PayloadAction<number>) {
-      state.page = action.payload;
-    },
-    clearSelectedAlbum(state) {
-      state.selectedAlbum = null;
-    },
+
   },
 });
 
 export const { 
   addAlbum,
-  setSelectedAlbum, 
-  setCollections, 
-  setSearch, 
-  setPage, 
-  clearSelectedAlbum ,
   addImageToAlbum 
 } = albumSlice.actions;
 

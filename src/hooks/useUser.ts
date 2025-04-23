@@ -1,6 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store';
+import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { setUsername } from '../store/slices/authSlice';
 
 export async function exchangeCodeForToken(code: string) {
     const params = new URLSearchParams();
@@ -23,24 +26,32 @@ export async function exchangeCodeForToken(code: string) {
   }
   
 
-export function useUnsplashUser() {
-  const token = useSelector((state: RootState) => state.auth.accessToken);
-
-  return useQuery({
-    queryKey: ['unsplashUser'],
-    queryFn: async () => {
-      const res = await fetch('https://api.unsplash.com/me', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (!res.ok) throw new Error('Failed to fetch user info');
-      return res.json();
-    },
-    enabled: !!token,
-  });
-}
-
+  export function useUnsplashUser() {
+    const token = useSelector((state: RootState) => state.auth.accessToken);
+    const dispatch = useDispatch();
+  
+    const query = useQuery({
+      queryKey: ['unsplashUser'],
+      queryFn: async () => {
+        const res = await fetch('https://api.unsplash.com/me', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (!res.ok) throw new Error('Failed to fetch user info');
+        return res.json();
+      },
+      enabled: !!token,
+    });
+  
+    useEffect(() => {
+      if (query.data?.username) {
+        dispatch(setUsername(query.data.username));
+      }
+    }, [query.data, dispatch]);
+  
+    return query;
+  }
 
 export function useUserCollections(username?: string) {
   const token = useSelector((state: RootState) => state.auth.accessToken);

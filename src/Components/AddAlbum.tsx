@@ -1,47 +1,77 @@
-import React, { useState } from "react";
+import React from "react";
 import { Button, TextField, Box, Typography } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { createAlbum } from "./albumThunks";
+import { toast } from "react-toastify";
+import { AxiosError } from "axios";
+import { AppDispatch } from "../store";
+
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const schema = z.object({
+  title: z.string().min(1, "Album title is required"),
+  description: z.string().optional(),
+});
+
+type FormData = z.infer<typeof schema>;
 
 const AddAlbumForm: React.FC = () => {
-  const dispatch = useDispatch();
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const dispatch: AppDispatch = useDispatch();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!title.trim()) return;
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
+  });
 
+  const onSubmit = async (data: FormData) => {
     try {
-      await dispatch(createAlbum(title, description, false) as any);
-      setTitle("");
-      setDescription("");
-    } catch (error) {
-      console.error("Failed to create album");
+      await dispatch(createAlbum(data.title, data.description || "", false));
+      toast.success("Album created successfully!");
+      reset();
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        if (error.response?.data?.message) {
+          toast.error(`Error creating album: ${error.response.data.message}`);
+        } else {
+          toast.error("Error creating album: " + error.message);
+        }
+      } else {
+        toast.error("An unknown error occurred while creating the album.");
+      }
     }
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit} sx={{ m: 4 }}>
-      <Typography variant="h5" >Add New Album</Typography>
+    <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ m: 4 }}>
+      <Typography variant="h5">Add New Album</Typography>
+
       <TextField
         label="Album Title"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
         fullWidth
-        required
         margin="normal"
+        error={!!errors.title}
+        helperText={errors.title?.message}
+        {...register("title")}
       />
+
       <TextField
         label="Description"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
         fullWidth
         multiline
         rows={3}
         margin="normal"
+        {...register("description")}
       />
-      <Button variant="contained" type="submit">Create Album</Button>
+
+      <Button variant="contained" type="submit" disabled={isSubmitting}>
+        {isSubmitting ? "Creating..." : "Create Album"}
+      </Button>
     </Box>
   );
 };

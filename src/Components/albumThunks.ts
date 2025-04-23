@@ -17,6 +17,7 @@ export const createAlbum = (title: string, description = "", isPrivate = false) 
     );
 
     const newAlbum = {
+      id: res.data.id, 
       name: res.data.title,
       images: [], 
     };

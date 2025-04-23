@@ -36,10 +36,10 @@ const AlbumTable: React.FC<AlbumTableProps> = ({
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>
+            <TableCell width="200px">
               <Typography variant="h6">Album</Typography>
             </TableCell>
-            <TableCell>
+            <TableCell width="500px">
               <Typography variant="h6">Description</Typography>
             </TableCell>
             <TableCell>

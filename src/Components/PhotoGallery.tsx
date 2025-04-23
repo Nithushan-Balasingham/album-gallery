@@ -1,4 +1,3 @@
-// PhotoGallery.tsx
 import React from 'react';
 
 interface PhotoProps {
