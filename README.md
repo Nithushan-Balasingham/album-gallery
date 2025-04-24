@@ -6,7 +6,7 @@
 
 # 📸 Unsplash Developer Account Registration & Authentication
 
-To use the Unsplash API in your application, you'll need to register for a developer account and authenticate your requests using either an **Access Key** (for public access) or **OAuth** (for user-level access).
+To use the Unsplash API in your application, you'll need to register for a developer account and authenticate your requests using either an **Access Key** (for public access) or **OAuth** (for user-level access) and With a free account, you can make only 50 requests per hour.
 
 ---
 
