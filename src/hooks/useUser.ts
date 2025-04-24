@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../store';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
-import { setUsername } from '../store/slices/authSlice';
+import { setUser, setUsername } from '../store/slices/authSlice';
 
 export async function exchangeCodeForToken(code: string) {
     const params = new URLSearchParams();
@@ -45,11 +45,11 @@ export async function exchangeCodeForToken(code: string) {
     });
   
     useEffect(() => {
-      if (query.data?.username) {
-        dispatch(setUsername(query.data.username));
+      if (query.data?.username && query.data?.id) {
+        dispatch(setUser({ username: query.data.username, id: query.data.id }));
       }
     }, [query.data, dispatch]);
-  
+    
     return query;
   }
 

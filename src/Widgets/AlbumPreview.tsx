@@ -22,6 +22,7 @@ const AlbumPreview: React.FC<AlbumPreviewPhotosProps> = ({
   onImageClick,
 }) => {
   if (!previewPhotos || previewPhotos.length === 0) return null;
+  console.log(previewPhotos)
   return (
     <Stack direction={"column"} spacing={2} alignItems={"center"} justifyContent={"center"} width={"100%"}>  
       <Typography variant="h6" gutterBottom>
@@ -34,8 +35,8 @@ const AlbumPreview: React.FC<AlbumPreviewPhotosProps> = ({
               src={photo.urls.thumb}
               alt={photo.slug}
               style={{
-                width: "100%",
-                height: "150px",
+                width: "500px",
+                height: "120px",
                 objectFit: "cover",
                 borderRadius: "8px",
                 boxShadow: "0 2px 8px rgba(0,0,0,0.1)",

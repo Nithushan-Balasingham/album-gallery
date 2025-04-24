@@ -1,7 +1,6 @@
 import React, { FC } from "react";
 import { Button, TextField, Box, Typography } from "@mui/material";
 import { useDispatch } from "react-redux";
-import { createAlbum } from "./albumThunks";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
 import { AppDispatch } from "../store";
@@ -9,6 +8,8 @@ import { AppDispatch } from "../store";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { createAlbum } from "./albumThunks";
+import { CreateAlbumFormProps } from "../utils/types";
 
 const schema = z.object({
   title: z.string().min(1, "Album title is required"),
@@ -16,14 +17,6 @@ const schema = z.object({
 });
 
 type FormData = z.infer<typeof schema>;
-interface CreateAlbumFormProps {
-  onSubmit: (data: {
-    title: string;
-    private: boolean;
-    images: string[];
-    description?: string;
-  }) => Promise<void>;
-}
 
 
 const AddAlbumForm: FC<CreateAlbumFormProps>= () => {

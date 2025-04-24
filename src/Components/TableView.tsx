@@ -18,15 +18,20 @@ import CreateAlbumForm from "./AddAlbum";
 import { useNavigate } from "react-router";
 import ImagePreviewModal from "../Reusable/ImagePreviewModal";
 import { AuthButton } from "../Widgets/AuthButton";
-import { useUnsplashUser, useUserCollections } from "../hooks/useUser";
+import { useUnsplashUser } from "../hooks/useUser";
 import AlbumTable from "../Widgets/Table";
 import AlbumCardGrid from "../Widgets/AlbumGrid";
 import AlbumPreview from "../Widgets/AlbumPreview";
 
+interface Album {
+  id: string;
+  title: string;
+  [key: string]: string | number | boolean | object | null | undefined;
+}
+
 const TableView = () => {
   const [search, setSearch] = useState("");
   const [selectedAlbum, setSelectedAlbum] = useState<any>(null);
-  const [selectedMyAlbum, setSelectedMyAlbum] = useState<any>(null);
   const [page, setPage] = useState(1);
   const [perPage] = useState(10);
   const [viewMode, setViewMode] = useState<"table" | "folder">("table");
@@ -34,6 +39,10 @@ const TableView = () => {
 
   const handleRoute = (id: string) => {
     navigate(`/${id}`);
+  };
+
+  const handleRouteCollection = () => {
+    navigate("/mycollection");
   };
   const { data: collections, isLoading: isPhotoLoading } = useSearchPhotos(
     search,
@@ -44,14 +53,6 @@ const TableView = () => {
     setSelectedImage(imageUrl);
     setOpenModal(true);
   };
-  const { data: userData, isLoading: userLoading } = useUnsplashUser();
-  const { data: userColletion } = useUserCollections(userData?.username);
-
-  interface Album {
-    id: string;
-    title: string;
-    [key: string]: string | number | boolean | object | null | undefined;
-  }
 
   const filteredCollections = collections?.filter((album: Album) =>
     album.title.toLowerCase().includes(search.toLowerCase())
@@ -84,13 +85,7 @@ const TableView = () => {
       setSelectedAlbum(album);
     }
   };
-  const handleMyAlbumClick = (album: any) => {
-    if (selectedMyAlbum?.id === album.id) {
-      setSelectedMyAlbum(null);
-    } else {
-      setSelectedMyAlbum(album);
-    }
-  };
+
   const handleNextPage = () => {
     setPage((prevPage) => prevPage + 1);
   };
@@ -101,12 +96,11 @@ const TableView = () => {
   useEffect(() => {
     setSelectedAlbum(null);
   }, [search]);
-  console.log(userColletion);
   return (
     <Stack direction={"column"} alignItems={"center"} className=" p-4 w-full">
-      <AuthButton />
-           <SearchBar search={search} setSearch={setSearch} />
-      <CreateAlbumForm onSubmit={handleAlbumSubmit} />
+      {/* <AuthButton /> */}
+      <SearchBar search={search} setSearch={setSearch} />
+      {/* <CreateAlbumForm onSubmit={handleAlbumSubmit} /> */}
 
       <FormControl style={{ minWidth: 150, marginTop: 16 }}>
         <InputLabel>View</InputLabel>
@@ -119,48 +113,8 @@ const TableView = () => {
           <MenuItem value="folder">Folder View</MenuItem>
         </Select>
       </FormControl>
-      {!userColletion || userColletion.length === 0 ? (
-        <Typography>No Own Collections Found</Typography>
-      ) : (
-        <>
-          {" "}
-          <Typography>My Collection</Typography>
-          <Grid container spacing={2} style={{ marginTop: "12px" }}>
-            <Grid size={{ xs: 12, md: selectedMyAlbum ? 6 : 12 }}>
-              {viewMode === "table" ? (
-                <>
-                  <AlbumTable
-                    albums={userColletion}
-                    selectedAlbumId={selectedMyAlbum?.id}
-                    onAlbumClick={handleMyAlbumClick}
-                    onViewClick={handleRoute}
-                  />
-                </>
-              ) : (
-                <Grid container spacing={2}>
-                  <AlbumCardGrid
-                    albums={userColletion}
-                    selectedAlbumId={selectedMyAlbum?.id}
-                    onAlbumClick={handleMyAlbumClick}
-                    onViewClick={handleRoute}
-                  />
-                </Grid>
-              )}
-            </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
-              {selectedMyAlbum && (
-                <AlbumPreview
-                  title={selectedMyAlbum.title}
-                  previewPhotos={selectedMyAlbum.preview_photos || []}
-                  onImageClick={handleImageClick}
-                />
-              )}
-            </Grid>
-          </Grid>
-        </>
-      )}
+      <Button onClick={handleRouteCollection}>My Collection</Button>
 
- 
       {!filteredCollections || filteredCollections.length === 0 ? (
         <Typography>No Collections Found</Typography>
       ) : (

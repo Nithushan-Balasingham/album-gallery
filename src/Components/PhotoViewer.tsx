@@ -10,22 +10,20 @@ import { useNavigate, useParams } from "react-router";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useState } from "react";
 import ImagePreviewModal from "../Reusable/ImagePreviewModal";
-import { useAddImageToAlbum } from "../hooks/useUploadImage";
 import SearchBar from "./Searchbar";
+
 
 const AlbumDetailView = () => {
   const { id } = useParams();
   const { data: album } = useAlbumDetails(id as string);
   const navigate = useNavigate();
-
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedImageId, setSelectedImageId] = useState<string | null>(null);
-  console.log(selectedImageId);
+  console.log("album", album);
   // const { data: collections, isLoading, error } =
   //   searchQuery.trim() !== '' ? useSearchPhotos(searchQuery.trim(), 1, 20) : { data: [], isLoading: false, error: null };
   const [page, setPage] = useState(1);
 
-  const { mutate: addImageToAlbumMutation } = useAddImageToAlbum();
   const {
     data: collections,
     isLoading,
@@ -39,11 +37,6 @@ const AlbumDetailView = () => {
     setPage((prev) => prev + 1);
   };
 
-  const handleAddImageToAlbum = () => {
-    if (id && selectedImageId) {
-      addImageToAlbumMutation({ albumId: id, photoId: selectedImageId });
-    }
-  };
 
   const [openModal, setOpenModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -111,14 +104,7 @@ const AlbumDetailView = () => {
         <Button onClick={loadMoreImages} disabled={isLoading}>
           {isLoading ? "Loading More..." : "Load More"}
         </Button>
-        {selectedImageId && (
-          <Stack direction="row" spacing={2} alignItems="center">
-            <Typography>Selected Image ID: {selectedImageId}</Typography>
-            <Button variant="contained" onClick={handleAddImageToAlbum}>
-              Add to Album
-            </Button>
-          </Stack>
-        )}
+
       </Stack>
 
       <Typography variant="h4">{album?.title}</Typography>
