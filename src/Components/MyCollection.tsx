@@ -10,8 +10,6 @@ import {
   Box,
 } from "@mui/material";
 import {   useState } from "react";
-import axios from "axios";
-import { AlbumFormData } from "./albumSchema";
 import { useNavigate } from "react-router";
 import ImagePreviewModal from "../Reusable/ImagePreviewModal";
 import { useUnsplashUser, useUserCollections } from "../hooks/useUser";
@@ -43,20 +41,6 @@ const MyCollection = () => {
   const handleClose = () => {
     setOpenModal(false);
     setSelectedImage(null);
-  };
-  const handleAlbumSubmit = async (data: AlbumFormData) => {
-    try {
-      const response = await axios.post("/api/albums", {
-        title: data.title,
-        description: data.description,
-        private: data.private,
-        images: data.images,
-      });
-
-
-    } catch (err) {
-      console.error("Album creation failed", err);
-    }
   };
 
   const handleMyAlbumClick = (album: any) => {
