@@ -18,6 +18,7 @@ import { useUserCollections } from "../hooks/useUser";
 import { CollectionImage, UserCollection } from "../utils/types";
 import Swal from "sweetalert2";
 import ButtonWidget from "../Reusable/ButtonWidget";
+import { toast } from "react-toastify";
 
 const OwnCollection = () => {
   const { id } = useParams();
@@ -53,9 +54,12 @@ const OwnCollection = () => {
     if (id && selectedImageId) {
       addImageToAlbumMutation({ albumId: id, photoId: selectedImageId });
     }
-    navigate("/mycollection");
-  };
+    
 
+  };
+const handleBack=()=>{
+  navigate('/mycollection')
+}
 
   const handleImageClick = (imageUrl: string) => {
     setSelectedImage(imageUrl);
@@ -67,6 +71,9 @@ const OwnCollection = () => {
     setSelectedImage(null);
   };
   const handleAddCollectiontoImage = () => {
+    if(!selectedImageId){
+      return toast.error("Select Image")
+    }
     Swal.fire({
       title: "Are you sure?",
       text: "Do you want to add this image to the collection?",
@@ -78,8 +85,9 @@ const OwnCollection = () => {
       if (result.isConfirmed) {
         handleAddImageToAlbum();
         Swal.fire("Added!", "Your collection has been updated.", "success");
-        navigate("/mycollection");
-      }
+        setTimeout(()=>{
+          navigate("/mycollection")
+        },4000);      }
     });
   };
   const filteredCollections = collections?.filter(
@@ -177,6 +185,7 @@ const OwnCollection = () => {
           <ButtonWidget
             onClick={handleAddCollectiontoImage}
             label="Add to Collection"
+            disabled={!selectedImageId}
             className="rounded-xl w-60"
           />
         </Stack>
@@ -225,8 +234,8 @@ const OwnCollection = () => {
       </Box>
 
       <ButtonWidget
-        onClick={handleAddCollectiontoImage}
-        label="Add to Collection"
+        onClick={handleBack}
+        label="Back"
         endIcon={<ArrowBackIcon />}
         className="rounded-xl w-60"
       />
