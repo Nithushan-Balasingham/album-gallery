@@ -104,7 +104,7 @@ Authorization: Bearer USER_ACCESS_TOKEN
 Follow these steps to set up the project:
 
 ```sh
-# 1. Clone the repository 
+# 1. Clone the repository (Branch-Main)
 git https://github.com/Nithushan-Balasingham/album-gallery
 cd FE
 
