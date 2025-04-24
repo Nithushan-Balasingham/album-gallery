@@ -8,6 +8,8 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  CircularProgress,
+  Box,
 } from "@mui/material";
 import SearchBar from "./Searchbar";
 import { useEffect, useState } from "react";
@@ -18,6 +20,7 @@ import AlbumTable from "../Widgets/Table";
 import AlbumCardGrid from "../Widgets/AlbumGrid";
 import AlbumPreview from "../Widgets/AlbumPreview";
 import { Album } from "../utils/types";
+import ButtonWidget from "../Reusable/ButtonWidget";
 
 const TableView = () => {
   const [search, setSearch] = useState("");
@@ -87,10 +90,20 @@ const TableView = () => {
           <MenuItem value="folder">Folder View</MenuItem>
         </Select>
       </FormControl>
-      <Button onClick={handleRouteCollection}>My Collection</Button>
 
-      {!filteredCollections || filteredCollections.length === 0 ? (
-        <Typography>No Collections Found</Typography>
+      <ButtonWidget
+          onClick={handleRouteCollection}
+          label="My Collection"
+          className="rounded-xl w-60"
+          />
+      {isPhotoLoading ? (
+        <Box marginTop={"40px"}><CircularProgress /></Box>
+      ) : !filteredCollections || filteredCollections.length === 0 ? (
+        <Typography marginTop={"40px"} variant="h5">
+          No Collections Found
+        </Typography>
+      ) : isPhotoLoading ? (
+        <CircularProgress />
       ) : (
         <Grid container spacing={4} style={{ marginTop: "12px" }}>
           <Grid size={{ xs: 12, md: selectedAlbum ? 6 : 12 }}>
@@ -125,34 +138,37 @@ const TableView = () => {
           </Grid>
         </Grid>
       )}
+
       <ImagePreviewModal
         open={openModal}
         imageUrl={selectedImage}
         onClose={handleClose}
       />
-      <Stack
-        direction={"row"}
-        alignItems={"center"}
-        justifyContent={"center"}
-        marginTop={"10px"}
-        gap={5}
-      >
-        <Button
+      {filteredCollections?.length > 0 && (
+        <Stack
+          direction={"row"}
+          alignItems={"center"}
+          justifyContent={"center"}
+          marginTop={"10px"}
+          gap={5}
+        >
+
+          <ButtonWidget
           onClick={handlePreviousPage}
           disabled={page === 1}
-          variant="outlined"
-        >
-          Previous
-        </Button>{" "}
-        <Typography variant="body1">Page: {page}</Typography>
-        <Button
-          onClick={handleNextPage}
-          variant="outlined"
-          style={{ marginLeft: "10px" }}
-        >
-          Next
-        </Button>
-      </Stack>
+
+          label="Previous"
+          className="rounded-xl w-60"
+          />
+          <Typography variant="body1">Page: {page}</Typography>
+
+          <ButtonWidget
+         onClick={handleNextPage}
+         label="Next"
+          className="rounded-xl w-60"
+          />
+        </Stack>
+      )}
     </Stack>
   );
 };

@@ -9,19 +9,18 @@ import {
   MenuItem,
   Box,
 } from "@mui/material";
-import {  useState } from "react";
+import {   useState } from "react";
 import axios from "axios";
 import { AlbumFormData } from "./albumSchema";
-import CreateAlbumForm from "./AddAlbum";
 import { useNavigate } from "react-router";
 import ImagePreviewModal from "../Reusable/ImagePreviewModal";
-import { AuthButton } from "../Widgets/AuthButton";
 import { useUnsplashUser, useUserCollections } from "../hooks/useUser";
 import AlbumTable from "../Widgets/Table";
 import AlbumCardGrid from "../Widgets/AlbumGrid";
 import AlbumPreview from "../Widgets/AlbumPreview";
-import { useSelector } from "react-redux";
-import { RootState } from "../store";
+import { AuthComp } from "./AuthComp";
+import AddCollection from "./AddCollection";
+
 
 const MyCollection = () => {
   const [selectedMyAlbum, setSelectedMyAlbum] = useState<any>(null);
@@ -54,7 +53,7 @@ const MyCollection = () => {
         images: data.images,
       });
 
-      console.log("Album created:", response.data);
+
     } catch (err) {
       console.error("Album creation failed", err);
     }
@@ -67,13 +66,11 @@ const MyCollection = () => {
       setSelectedMyAlbum(album);
     }
   };
-  const token = useSelector((state: RootState) => state.auth);
-console.log('T', token)
 
   return (
     <Stack direction={"column"} alignItems={"center"} className=" p-4 w-full ">
-      <AuthButton />
-      <CreateAlbumForm onSubmit={handleAlbumSubmit} />
+      <AuthComp />
+      <AddCollection onSubmit={handleAlbumSubmit} />
 
       <FormControl style={{ minWidth: 150, marginTop: 16 }}>
         <InputLabel>View</InputLabel>
@@ -87,8 +84,8 @@ console.log('T', token)
         </Select>
       </FormControl>
 
-      {!userColletion || userColletion.length === 0 ? (
-        <Typography>No Collections Found</Typography>
+      {!userColletion  || userColletion .length === 0 ? (
+        <Typography variant="h5">No Collections Found</Typography>
       ) : (
         <Box>
           <Grid container spacing={4} style={{ marginTop: "12px" }}>

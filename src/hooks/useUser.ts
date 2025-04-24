@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../store';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
-import { setUser, setUsername } from '../store/slices/authSlice';
+import { setUser } from '../store/slices/authSlice';
 
 export async function exchangeCodeForToken(code: string) {
     const params = new URLSearchParams();

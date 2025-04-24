@@ -1,41 +1,40 @@
 import {
-  Button,
   CircularProgress,
   Grid,
   Stack,
   Typography,
 } from "@mui/material";
-import { useAlbumDetails, useSearchPhotos } from "../hooks/useSearchPhotos";
+import { useAlbumDetails } from "../hooks/useSearchPhotos";
 import { useNavigate, useParams } from "react-router";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useState } from "react";
 import ImagePreviewModal from "../Reusable/ImagePreviewModal";
-import SearchBar from "./Searchbar";
+import ButtonWidget from "../Reusable/ButtonWidget";
 
 
 const AlbumDetailView = () => {
   const { id } = useParams();
-  const { data: album } = useAlbumDetails(id as string);
+  const { data: album, isLoading } = useAlbumDetails(id as string);
   const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedImageId, setSelectedImageId] = useState<string | null>(null);
+  // const [searchQuery, setSearchQuery] = useState("");
+  // const [selectedImageId, setSelectedImageId] = useState<string | null>(null);
   console.log("album", album);
   // const { data: collections, isLoading, error } =
   //   searchQuery.trim() !== '' ? useSearchPhotos(searchQuery.trim(), 1, 20) : { data: [], isLoading: false, error: null };
-  const [page, setPage] = useState(1);
+  // const [page, setPage] = useState(1);
 
-  const {
-    data: collections,
-    isLoading,
-    error,
-  } = useSearchPhotos(searchQuery, page, 30);
+  // const {
+  //   data: collections,
+  //   isLoading,
+  //   error,
+  // } = useSearchPhotos(searchQuery, page, 30);
 
-  const handleImageSelect = (imageId: string) => {
-    setSelectedImageId(imageId);
-  };
-  const loadMoreImages = () => {
-    setPage((prev) => prev + 1);
-  };
+  // const handleImageSelect = (imageId: string) => {
+  //   setSelectedImageId(imageId);
+  // };
+  // const loadMoreImages = () => {
+  //   setPage((prev) => prev + 1);
+  // };
 
 
   const [openModal, setOpenModal] = useState(false);
@@ -55,11 +54,11 @@ const AlbumDetailView = () => {
     setSelectedImage(null);
   };
 
-  const filteredCollections = collections?.filter(
-    (col: { id: string; title?: string; description?: string }) =>
-      col.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      col.description?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // const filteredCollections = collections?.filter(
+  //   (col: { id: string; title?: string; description?: string }) =>
+  //     col.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  //     col.description?.toLowerCase().includes(searchQuery.toLowerCase())
+  // );
 
   return (
     <Stack spacing={2} sx={{ padding: 2 }}>
@@ -119,16 +118,12 @@ const AlbumDetailView = () => {
         Preview Photos: {album?.preview_photos?.length}
       </Typography>
 
-      <Button
-        variant="contained"
-        endIcon={<ArrowBackIcon />}
-        color="error"
-        onClick={handleNavigateBack}
-        sx={{ textAlign: "center", width: "fit-content" }}
-      >
-        Back
-      </Button>
-
+      <ButtonWidget
+          onClick={handleNavigateBack}
+          label="Back"
+          endIcon={<ArrowBackIcon/>}
+          className="rounded-xl w-60"
+          />
       <Grid container spacing={2}>
         {album?.preview_photos?.map(
           (photo: {

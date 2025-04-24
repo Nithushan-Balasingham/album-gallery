@@ -1,6 +1,5 @@
 import {
-  Button,
-  CircularProgress,
+    CircularProgress,
   Grid,
   Stack,
   Typography,
@@ -17,6 +16,8 @@ import { RootState } from "../store";
 import { useSelector } from "react-redux";
 import { useUserCollections } from "../hooks/useUser";
 import { UserCollection } from "../utils/types";
+import Swal from "sweetalert2";
+import ButtonWidget from "../Reusable/ButtonWidget";
 
 const OwnCollection = () => {
   const { id } = useParams();
@@ -55,7 +56,6 @@ const OwnCollection = () => {
     navigate("/mycollection");
   };
 
-  const handleNavigateBack = () => navigate("/");
 
   const handleImageClick = (imageUrl: string) => {
     setSelectedImage(imageUrl);
@@ -66,7 +66,22 @@ const OwnCollection = () => {
     setOpenModal(false);
     setSelectedImage(null);
   };
-
+  const handleAddCollectiontoImage = () => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "Do you want to add this image to the collection?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Yes, add it!",
+      cancelButtonText: "Cancel",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleAddImageToAlbum();
+        Swal.fire("Added!", "Your collection has been updated.", "success");
+        navigate("/mycollection");
+      }
+    });
+  };
   const filteredCollections = collections?.filter(
     (col: { id: string; title?: string; description?: string }) =>
       col.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -126,20 +141,26 @@ const OwnCollection = () => {
         )}
       </Grid>
 
-      <Button onClick={loadMoreImages} disabled={isLoading}>
-        {isLoading ? "Loading More..." : "Load More"}
-      </Button>
-
+      <Stack justifyContent={"center"} alignItems={"center"} mt={2}>
+        <ButtonWidget
+          onClick={loadMoreImages}
+          label="Load More"
+          disabled={isLoading}
+          className="rounded-xl w-60"
+        />
+      </Stack>
       {matchedCollection?.user && isUserId === matchedCollection.user.id && (
         <Stack direction="column" spacing={2} alignItems="center">
+          <Typography variant="h5" color="warning">
+            You can add one picture at a time
+          </Typography>
+
           <Typography>Selected Image ID: {selectedImageId}</Typography>
-          <Button
+          <ButtonWidget
+            onClick={handleAddCollectiontoImage}
+            label="Add to Collection"
             className="rounded-xl w-60"
-            variant="contained"
-            onClick={handleAddImageToAlbum}
-          >
-            Add to Collection
-          </Button>
+          />
         </Stack>
       )}
 
@@ -185,16 +206,12 @@ const OwnCollection = () => {
         </Grid>
       </Box>
 
-      <Button
-        variant="contained"
+      <ButtonWidget
+        onClick={handleAddCollectiontoImage}
+        label="Add to Collection"
         endIcon={<ArrowBackIcon />}
-        color="error"
-        onClick={handleNavigateBack}
-        sx={{ mt: 3, alignSelf: "center" }}
-      >
-        Back
-      </Button>
-
+        className="rounded-xl w-60"
+      />
       <ImagePreviewModal
         open={openModal}
         imageUrl={selectedImage}

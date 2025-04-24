@@ -8,7 +8,7 @@ import OwnCollection from "./Components/OwnCollection";
 function App() {
 
   return (
-    <div className="p-1 w-full min-h-screen bg-blue-200">
+    <div className="p-1 w-full min-h-screen bg-slate-50">
       <Routes>
         <Route path="/" element={<TableView />} />
         <Route path="/mycollection" element={<MyCollection />} />

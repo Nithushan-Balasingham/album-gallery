@@ -1,5 +1,5 @@
-import React, { FC } from "react";
-import { Button, TextField, Box, Typography } from "@mui/material";
+import  { FC } from "react";
+import {  TextField, Box, Typography } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
@@ -10,6 +10,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createAlbum } from "./albumThunks";
 import { CreateAlbumFormProps } from "../utils/types";
+import ButtonWidget from "../Reusable/ButtonWidget";
 
 const schema = z.object({
   title: z.string().min(1, "Album title is required"),
@@ -19,9 +20,8 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 
-const AddAlbumForm: FC<CreateAlbumFormProps>= () => {
+const AddCollection: FC<CreateAlbumFormProps>= () => {
   const dispatch: AppDispatch = useDispatch();
-
   const {
     register,
     handleSubmit,
@@ -32,18 +32,25 @@ const AddAlbumForm: FC<CreateAlbumFormProps>= () => {
   });
 
   const onSubmit = async (data: FormData) => {
+
     try {
       await dispatch(createAlbum(data.title, data.description || "", false));
-      toast.success("Album created successfully!");
+      toast.success("Collection is  created successfully!");
       reset();
+      setTimeout(()=>{
+      window.location.reload()
+      },2000)
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
-        if (error.response?.data?.message) {
-          toast.error(`Error creating album: ${error.response.data.message}`);
-        } else {
-          toast.error("Error creating album: " + error.message);
+        if(error.response?.status=== 403){
+          toast.error("Not Authorized or Rate limit exceeded for free account")
         }
+        if (error.response?.data?.message) {
+          console.log("object",error)
+          toast.error(`Error creatisng album: ${error.response.data.message}`);
+        } 
       } else {
+        console.log(error)
         toast.error("An unknown error occurred while creating the album.");
       }
     }
@@ -51,7 +58,7 @@ const AddAlbumForm: FC<CreateAlbumFormProps>= () => {
 
   return (
     <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ m: 4 }}>
-      <Typography variant="h5">Add New Album</Typography>
+      <Typography variant="h5" textAlign={"center"}>Add New Collection</Typography>
 
       <TextField
         label="Album Title"
@@ -70,12 +77,9 @@ const AddAlbumForm: FC<CreateAlbumFormProps>= () => {
         margin="normal"
         {...register("description")}
       />
-
-      <Button variant="contained" type="submit" disabled={isSubmitting}>
-        {isSubmitting ? "Creating..." : "Create Album"}
-      </Button>
+      <ButtonWidget type="submit" label="Create Collection" disabled={isSubmitting}/>
     </Box>
   );
 };
 
-export default AddAlbumForm;
+export default AddCollection;
