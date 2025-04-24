@@ -127,3 +127,6 @@ VITE_REDIRECT_URI="REDIRECT_URI"
 
 
 ```
+## Loom_Video
+https://www.loom.com/share/11161de353344561a8fbae03fa8c2b09?sid=2cf3df63-e696-4769-af1d-5a02e87bf5ed
+
