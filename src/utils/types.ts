@@ -1,5 +1,5 @@
 export interface CreateAlbumFormProps {
-  onSubmit: (data: {
+  onSubmit?: (data: {
     title: string;
     private: boolean;
     images: string[];

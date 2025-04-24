@@ -70,7 +70,7 @@ const MyCollection = () => {
   return (
     <Stack direction={"column"} alignItems={"center"} className=" p-4 w-full ">
       <AuthComp />
-      <AddCollection onSubmit={handleAlbumSubmit} />
+      <AddCollection />
 
       <FormControl style={{ minWidth: 150, marginTop: 16 }}>
         <InputLabel>View</InputLabel>
