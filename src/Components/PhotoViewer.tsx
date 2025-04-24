@@ -65,10 +65,10 @@ const AlbumDetailView = () => {
     <Stack spacing={2} sx={{ padding: 2 }}>
       <Stack spacing={2}>
         <Typography variant="h4">Search and Add from Collections</Typography>
-        <SearchBar search={searchQuery} setSearch={setSearchQuery} />
+        {/* <SearchBar search={searchQuery} setSearch={setSearchQuery} /> */}
 
         {isLoading && <CircularProgress />}
-        {error && (
+        {/* {error && (
           <Typography color="error">Error fetching collections</Typography>
         )}
 
@@ -103,7 +103,7 @@ const AlbumDetailView = () => {
         </Grid>
         <Button onClick={loadMoreImages} disabled={isLoading}>
           {isLoading ? "Loading More..." : "Load More"}
-        </Button>
+        </Button> */}
 
       </Stack>
 

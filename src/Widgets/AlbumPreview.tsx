@@ -1,20 +1,8 @@
 import React from "react";
 import { Grid, Stack, Typography } from "@mui/material";
+import { AlbumPreviewPhotosProps } from "../utils/types";
 
-interface Photo {
-  id: string;
-  slug: string;
-  urls: {
-    thumb: string;
-    full: string;
-  };
-}
 
-interface AlbumPreviewPhotosProps {
-  title: string;
-  previewPhotos: Photo[];
-  onImageClick: (imageUrl: string) => void;
-}
 
 const AlbumPreview: React.FC<AlbumPreviewPhotosProps> = ({
   title,

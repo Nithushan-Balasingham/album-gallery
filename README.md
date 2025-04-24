@@ -1,54 +1,129 @@
-# React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Album-Gallery-Unsplash
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Expanding the ESLint configuration
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+# 📸 Unsplash Developer Account Registration & Authentication
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+To use the Unsplash API in your application, you'll need to register for a developer account and authenticate your requests using either an **Access Key** (for public access) or **OAuth** (for user-level access).
+
+---
+
+## 🔧 Steps to Register
+
+1. **Create an Unsplash Account**
+   - Go to [https://unsplash.com/join](https://unsplash.com/join)
+   - Sign up using your email or a social login (Google, Apple, etc.)
+
+2. **Apply for a Developer Account**
+   - Go to the [Unsplash Developer Portal](https://unsplash.com/developers)
+   - Click on **"Your Applications"**
+   - Click **"New Application"**
+
+3. **Fill Out Application Details**
+   - **Name**: Give your app a unique name.
+   - **Description**: Describe what your app does.
+   - **Website / Callback URLs**: Provide a valid URL. For local development, you can use `http://localhost:3000`.
+   - **Use Case**: Briefly explain how you will use the Unsplash API.
+   - Accept the API Guidelines and Terms of Service.
+
+4. **Get Your API Keys**
+   - After creating your app, you’ll get an **Access Key** and a **Secret Key**.
+   - Use the **Access Key** for basic, public API calls.
+   - Use **OAuth** if you need to perform user-authenticated actions (like user likes, collections, etc.)
+
+---
+
+## 🔐 Authentication Methods
+
+### ✅ 1. Public Access (Access Key)
+
+For simple search and image retrieval, use your **Access Key** by passing it as a query parameter:
+
+```http
+GET https://api.unsplash.com/photos/?client_id=YOUR_ACCESS_KEY
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Or in headers (for some HTTP clients):
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```http
+Authorization: Client-ID YOUR_ACCESS_KEY
+```
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+---
+
+### 🔁 2. User Authentication (OAuth 2.0)
+
+For requests that involve user-specific data (like creating a collection), you'll need to implement OAuth:
+
+#### 📌 Authorization Flow
+
+1. Redirect user to authorize:
+```
+https://unsplash.com/oauth/authorize?client_id=YOUR_ACCESS_KEY
+&redirect_uri=YOUR_CALLBACK_URL
+&response_type=code
+&scope=public+read_user
+```
+
+2. Unsplash redirects back with a `code`. Exchange it for a token:
+
+```bash
+POST https://unsplash.com/oauth/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id=YOUR_ACCESS_KEY
+&client_secret=YOUR_SECRET_KEY
+&redirect_uri=YOUR_CALLBACK_URL
+&code=THE_CODE_YOU_RECEIVED
+&grant_type=authorization_code
+```
+
+3. Initially, under 🔒 Redirect URI & Permissions, you must grant all necessary permissions to enable the full authorization flow.
+
+
+📚 [Full OAuth documentation →](https://unsplash.com/documentation#user-authentication)
+
+---
+
+4. You'll receive a `Bearer` access token. Use it like this:
+
+```http
+Authorization: Bearer USER_ACCESS_TOKEN
+```
+
+📚 [Full OAuth documentation →](https://unsplash.com/documentation#user-authentication)
+
+---
+
+
+
+## Installation Instructions for FE
+
+Follow these steps to set up the project:
+
+```sh
+# 1. Clone the repository 
+git https://github.com/Nithushan-Balasingham/album-gallery
+cd FE
+
+# 2. Install dependencies
+npm i
+
+# 3. Start the development server
+npm run dev
+```
+
+## Environment Variables
+Ensure you have a `.env` file with the required variables:
+
+```ini
+VITE_ACCESS_KEY="ACCESS_KEY"
+VITE_SECRET_KEY="SECRET_KEY"
+VITE_REDIRECT_URI="REDIRECT_URI"
+
+
+
+
 ```

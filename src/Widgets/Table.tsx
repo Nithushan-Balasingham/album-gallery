@@ -11,19 +11,9 @@ import {
   IconButton,
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import { AlbumTableProps } from "../utils/types";
 
-interface Album {
-  id: string;
-  title: string;
-  description?: string;
-}
 
-interface AlbumTableProps {
-  albums: Album[];
-  selectedAlbumId?: string;
-  onAlbumClick: (album: Album) => void;
-  onViewClick: (albumId: string) => void;
-}
 
 const AlbumTable: React.FC<AlbumTableProps> = ({
   albums,

@@ -3,7 +3,7 @@ import storage from 'redux-persist/lib/storage';
 import { persistReducer, persistStore } from 'redux-persist';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import albumReducer from './slices/albumSlice'; 
-import authReducer from './slices/authSlice'; // Import the new authSlice
+import authReducer from './slices/authSlice'; 
 
 const persistConfig = {
   key: 'root',

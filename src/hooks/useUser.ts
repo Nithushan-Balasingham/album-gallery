@@ -7,9 +7,9 @@ import { setUser, setUsername } from '../store/slices/authSlice';
 
 export async function exchangeCodeForToken(code: string) {
     const params = new URLSearchParams();
-    params.append('client_id', import.meta.env.VITE_UNSPLASH_CLIENT_ID);
-    params.append('client_secret', import.meta.env.VITE_UNSPLASH_CLIENT_SECRET);
-    params.append('redirect_uri', import.meta.env.VITE_UNSPLASH_REDIRECT_URI);
+    params.append('client_id', import.meta.env.VITE_ACCESS_KEY);
+    params.append('client_secret', import.meta.env.VITE_SECRET_KEY);
+    params.append('redirect_uri', import.meta.env.VITE_REDIRECT_URI);
     params.append('code', code);
     params.append('grant_type', 'authorization_code');
   

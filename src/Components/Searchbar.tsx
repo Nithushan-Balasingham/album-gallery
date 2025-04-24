@@ -1,10 +1,7 @@
 import { TextField } from '@mui/material';
 import React from 'react';
+import { SearchBarProps } from '../utils/types';
 
-interface SearchBarProps {
-  search: string;
-  setSearch: React.Dispatch<React.SetStateAction<string>>;
-}
 
 const SearchBar: React.FC<SearchBarProps> = ({ search, setSearch }) => {
   return (

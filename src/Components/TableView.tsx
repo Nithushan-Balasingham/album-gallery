@@ -12,22 +12,12 @@ import {
 import SearchBar from "./Searchbar";
 import { useEffect, useState } from "react";
 import { useSearchPhotos } from "../hooks/useSearchPhotos";
-import axios from "axios";
-import { AlbumFormData } from "./albumSchema";
-import CreateAlbumForm from "./AddAlbum";
 import { useNavigate } from "react-router";
 import ImagePreviewModal from "../Reusable/ImagePreviewModal";
-import { AuthButton } from "../Widgets/AuthButton";
-import { useUnsplashUser } from "../hooks/useUser";
 import AlbumTable from "../Widgets/Table";
 import AlbumCardGrid from "../Widgets/AlbumGrid";
 import AlbumPreview from "../Widgets/AlbumPreview";
-
-interface Album {
-  id: string;
-  title: string;
-  [key: string]: string | number | boolean | object | null | undefined;
-}
+import { Album } from "../utils/types";
 
 const TableView = () => {
   const [search, setSearch] = useState("");
@@ -63,20 +53,6 @@ const TableView = () => {
     setOpenModal(false);
     setSelectedImage(null);
   };
-  const handleAlbumSubmit = async (data: AlbumFormData) => {
-    try {
-      const response = await axios.post("/api/albums", {
-        title: data.title,
-        description: data.description,
-        private: data.private,
-        images: data.images,
-      });
-
-      console.log("Album created:", response.data);
-    } catch (err) {
-      console.error("Album creation failed", err);
-    }
-  };
 
   const handleAlbumClick = (album: any) => {
     if (selectedAlbum?.id === album.id) {
@@ -98,9 +74,7 @@ const TableView = () => {
   }, [search]);
   return (
     <Stack direction={"column"} alignItems={"center"} className=" p-4 w-full">
-      {/* <AuthButton /> */}
       <SearchBar search={search} setSearch={setSearch} />
-      {/* <CreateAlbumForm onSubmit={handleAlbumSubmit} /> */}
 
       <FormControl style={{ minWidth: 150, marginTop: 16 }}>
         <InputLabel>View</InputLabel>

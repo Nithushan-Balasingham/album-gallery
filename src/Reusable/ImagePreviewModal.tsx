@@ -1,10 +1,6 @@
 import { Dialog, DialogContent } from "@mui/material";
+import { ImagePreviewModalProps } from "../utils/types";
 
-type ImagePreviewModalProps = {
-  open: boolean;
-  imageUrl: string | null;
-  onClose: () => void;
-};
 
 const ImagePreviewModal = ({ open, imageUrl, onClose }: ImagePreviewModalProps) => {
   return (

@@ -7,19 +7,8 @@ import {
   IconButton,
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import { AlbumCardGridProps } from "../utils/types";
 
-interface Album {
-  id: string;
-  title: string;
-  description?: string;
-}
-
-interface AlbumCardGridProps {
-  albums: Album[];
-  selectedAlbumId?: string;
-  onAlbumClick: (album: Album) => void;
-  onViewClick: (albumId: string) => void;
-}
 
 const AlbumCardGrid: React.FC<AlbumCardGridProps> = ({
   albums,

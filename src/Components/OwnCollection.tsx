@@ -18,7 +18,6 @@ import { useSelector } from "react-redux";
 import { useUserCollections } from "../hooks/useUser";
 import { UserCollection } from "../utils/types";
 
-
 const OwnCollection = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -93,21 +92,34 @@ const OwnCollection = () => {
             cover_photo?: { id: string; urls: { thumb: string } };
           }) => (
             <Grid size={{ xs: 12, sm: 6, md: 3 }} key={collection.id}>
-              <img
-                src={collection.cover_photo?.urls.thumb}
-                alt={collection.title}
-                style={{
-                  width: "100%",
-                  height: "150px",
-                  objectFit: "cover",
-                  borderRadius: "8px",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                }}
+              <Box
                 onClick={() =>
                   collection.cover_photo?.id &&
                   handleImageSelect(collection.cover_photo.id)
                 }
-              />
+                sx={{
+                  border:
+                    selectedImageId === collection.cover_photo?.id
+                      ? "3px solid #1976d2"
+                      : "none",
+                  borderRadius: "8px",
+                  overflow: "hidden",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                  cursor: "pointer",
+                }}
+              >
+                <img
+                  src={collection.cover_photo?.urls.thumb}
+                  alt={collection.title}
+                  style={{
+                    width: "100%",
+                    height: "150px",
+                    objectFit: "cover",
+                    display: "block",
+                  }}
+                />
+              </Box>
+
               <Typography textAlign={"center"}>{collection.title}</Typography>
             </Grid>
           )
@@ -118,16 +130,18 @@ const OwnCollection = () => {
         {isLoading ? "Loading More..." : "Load More"}
       </Button>
 
-      {selectedImageId &&
-        matchedCollection?.user &&
-        isUserId === matchedCollection.user.id && (
-          <Stack direction="row" spacing={2} alignItems="center">
-            <Typography>Selected Image ID: {selectedImageId}</Typography>
-            <Button variant="contained" onClick={handleAddImageToAlbum}>
-              Add to Album
-            </Button>
-          </Stack>
-        )}
+      {matchedCollection?.user && isUserId === matchedCollection.user.id && (
+        <Stack direction="column" spacing={2} alignItems="center">
+          <Typography>Selected Image ID: {selectedImageId}</Typography>
+          <Button
+            className="rounded-xl w-60"
+            variant="contained"
+            onClick={handleAddImageToAlbum}
+          >
+            Add to Collection
+          </Button>
+        </Stack>
+      )}
 
       <Box>
         <Typography variant="h4">Title:{matchedCollection?.title}</Typography>

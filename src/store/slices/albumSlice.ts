@@ -1,15 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-interface Album {
-  id: string;     
-  name: string;
-  images: string[];
-}
-interface AlbumState {
-  selectedAlbum: Album | null;
-  collections: Album[];
-  search: string;
-  page: number;
-}
+import { AlbumRedux, AlbumState } from '../../utils/types';
+
 
 const initialState: AlbumState = {
   selectedAlbum: null,
@@ -22,7 +13,7 @@ const albumSlice = createSlice({
   name: 'album',
   initialState,
   reducers: {
-    addAlbum(state, action: PayloadAction<Album>) {
+    addAlbum(state, action: PayloadAction<AlbumRedux>) {
       state.collections.push(action.payload);
     },
     addImageToAlbum: (state, action: PayloadAction<{ albumId: string; imageId: string }>) => {
