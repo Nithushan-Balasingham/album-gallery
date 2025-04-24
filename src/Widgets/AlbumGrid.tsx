@@ -17,15 +17,17 @@ const AlbumCardGrid: React.FC<AlbumCardGridProps> = ({
   onViewClick,
 }) => {
   return (
-    <>
+                <Grid container spacing={2}>
+    
       {albums.map((album) => (
-        <Grid size={{xs:12, sm:6, md:6}} key={album.id}>
+        <Grid size={{xs:12, sm:6, md:albums?.length > 1 ? 4 : 12}} key={album.id}>
           <Box
             onClick={() => onAlbumClick(album)}
             sx={{
               cursor: "pointer",
               p: 2,
               height: "100%",
+              width: "100%",
               border: "1px solid #ccc",
               borderRadius: 2,
               backgroundColor: selectedAlbumId === album.id ? "#e0f7fa" : "white",
@@ -55,7 +57,8 @@ const AlbumCardGrid: React.FC<AlbumCardGridProps> = ({
           </Box>
         </Grid>
       ))}
-    </>
+                  </Grid>
+    
   );
 };
 

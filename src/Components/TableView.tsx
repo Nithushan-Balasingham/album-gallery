@@ -2,7 +2,6 @@
 import {
   Grid,
   Typography,
-  Button,
   Stack,
   FormControl,
   InputLabel,
@@ -117,14 +116,12 @@ const TableView = () => {
                 />
               </>
             ) : (
-              <Grid container spacing={2}>
                 <AlbumCardGrid
                   albums={filteredCollections}
                   selectedAlbumId={selectedAlbum?.id}
                   onAlbumClick={handleAlbumClick}
                   onViewClick={handleRoute}
                 />
-              </Grid>
             )}
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>

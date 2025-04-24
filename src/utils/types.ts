@@ -108,3 +108,17 @@ export interface AlbumTableProps {
   onAlbumClick: (album: AlbumTable) => void;
   onViewClick: (albumId: string) => void;
 }
+
+
+export interface CollectionImage {
+  id: string;
+  title?: string;
+  description?: string;
+  cover_photo?: {
+    id: string;
+    urls: {
+      thumb: string;
+    };
+  };
+}
+

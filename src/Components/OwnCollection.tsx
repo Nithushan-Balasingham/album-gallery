@@ -15,7 +15,7 @@ import SearchBar from "./Searchbar";
 import { RootState } from "../store";
 import { useSelector } from "react-redux";
 import { useUserCollections } from "../hooks/useUser";
-import { UserCollection } from "../utils/types";
+import { CollectionImage, UserCollection } from "../utils/types";
 import Swal from "sweetalert2";
 import ButtonWidget from "../Reusable/ButtonWidget";
 
@@ -100,12 +100,7 @@ const OwnCollection = () => {
 
       <Grid container spacing={2}>
         {filteredCollections?.map(
-          (collection: {
-            id: string;
-            title: string;
-            description?: string;
-            cover_photo?: { id: string; urls: { thumb: string } };
-          }) => (
+          (collection: CollectionImage) => (
             <Grid size={{ xs: 12, sm: 6, md: 3 }} key={collection.id}>
               <Box
                 onClick={() =>
@@ -154,7 +149,30 @@ const OwnCollection = () => {
           <Typography variant="h5" color="warning">
             You can add one picture at a time
           </Typography>
-
+         {selectedImageId && (
+        <Box
+        sx={{
+          width: "200px",
+          height: "150px",
+          borderRadius: "8px",
+          overflow: "hidden",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+        }}
+            >
+        <img
+          src={filteredCollections.find(
+            (collectImg: {
+              id: string;
+              title?: string;
+              description?: string;
+              cover_photo?: { id: string; urls: { thumb: string } };
+            }) => collectImg.cover_photo?.id === selectedImageId
+          )?.cover_photo?.urls.thumb}
+          alt="Selected"
+          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+        />
+            </Box>
+         )}
           <Typography>Selected Image ID: {selectedImageId}</Typography>
           <ButtonWidget
             onClick={handleAddCollectiontoImage}
