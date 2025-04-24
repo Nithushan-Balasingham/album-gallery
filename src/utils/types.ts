@@ -53,7 +53,7 @@ export type ImagePreviewModalProps = {
 export interface AlbumRedux {
   id: string;
   name: string;
-  images: string[];
+  images?: string[];
 }
 export interface AlbumState {
   selectedAlbum: AlbumRedux | null;
